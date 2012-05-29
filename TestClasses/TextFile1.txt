@@ -1,0 +1,111 @@
+﻿static object syncLock = new object();
+
+        static void Main(string[] args)
+        {
+            Random r = new Random();
+
+            Thread[] threads = new Thread[15];
+
+            for (int i = 0; i < threads.Length; i++)
+            {
+                threads[i] = new Thread(RunMatrix);
+                threads[i].Start(r);
+            }
+
+            Console.Read();
+        }
+
+        static void RunMatrix(object obj)
+        {
+            //Since we know that the object being sent in is a Random object,
+            //we just shift it...
+
+            Random random = obj as Random;
+
+            //Get starting coordinate values
+
+            int x = getRandomX(random);
+
+            int y = getRandomY(random);
+
+            //This is how fast the letters will move, in milliseconds
+
+            int speed = random.Next(40, 80);
+
+            //These are the colors to use on the screen. Green is Matrix style,
+            //but they can of course be changed
+
+            ConsoleColor lightColor = ConsoleColor.Green;
+
+            ConsoleColor darkColor = ConsoleColor.DarkGreen;
+
+            while (true)
+            {
+                int digitToOutput = random.Next(0, 9);
+
+                //This writes the letter with a bright light color
+
+                lock (syncLock)
+                {
+                    Console.SetCursorPosition(x, y);
+                    Console.ForegroundColor = lightColor;
+                    Console.Write(digitToOutput);
+                }
+
+                Thread.Sleep(speed);
+
+                //This overrites the previous letter with the proper dark color
+                
+                lock (syncLock)
+                {
+                    Console.SetCursorPosition(x, y);
+                    Console.ForegroundColor = darkColor;
+                    Console.Write(digitToOutput);
+                }
+
+                if (y >= Console.WindowHeight - 1)
+                {
+                    x = getRandomX(random);
+                    y = getRandomY(random);
+                }
+
+                //Move down one step for every loop
+                y++  ;
+            }
+        }
+
+        static int getRandomX(Random r)
+        {
+            return r.Next(0, Console.WindowWidth - 1);
+        }
+
+        static int getRandomY(Random r)
+        {
+            return r.Next(0, Console.WindowHeight - 1);
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+            Console.WriteLine();
+            Console.WriteLine("Methods");
+            MethodInfo[] x = t.GetMethods();
+            foreach (MethodInfo xtemp in x)
+            {
+                Console.WriteLine(xtemp.ToString());
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Members");
+            MemberInfo[] x2 = t.GetMembers();
+            foreach (MemberInfo xtemp2 in x2)
+            {
+                Console.WriteLine(xtemp2.ToString());
+            }
